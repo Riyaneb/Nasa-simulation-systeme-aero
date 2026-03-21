@@ -1,7 +1,7 @@
 import pandas as pd
 import sqlite3
 
-DataBase = sqlite3.connect("Base_donnée_des_test.db")
+DataBase = sqlite3.connect("Base_de_donnée_des_test.db")
 
 df = pd.read_sql("SELECT * FROM Train",DataBase)
 
