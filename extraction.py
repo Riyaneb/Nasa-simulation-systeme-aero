@@ -53,8 +53,8 @@ for i in range(1,5):
         TableauTrain = pd.concat([TableauTrain,df],ignore_index=True)
         
 
-TableauTest.to_sql(name="Test",con=DataBase,if_exists="replace")
-TableauTrain.to_sql(name="Train",con=DataBase,if_exists="replace")
+TableauTest.to_sql(name="Test",con=DataBase,if_exists="replace",index=False)
+TableauTrain.to_sql(name="Train",con=DataBase,if_exists="replace",index=False)
 
 DataBase.close()
 
