@@ -1,6 +1,23 @@
 import pandas as pd
 import sqlite3
 
+def chargerFichier(type,numero,nom_colonne):
+    if type not in ('train','test'):
+        print("Problème avec le type du fichier dans la fonction chargerFichier")
+        exit()
+    elif numero not in (1,2,3,4):
+        print("probleme avec le numero dans la focntion chargerFichier")
+        exit()
+    df = pd.read_table(f"CMAPSSData/{type}_FD00{numero}.txt",sep=r'\s+',header=None,names=nom_colonne)
+    fileShape = df.shape
+    if (fileShape[1] > 26):
+        df = df.drop(df.columns[26:fileShape[1]],axis=1)
+        fileShape = df.shape
+    df["file origin"] = [f"FD00{numero}" for j in range(fileShape[0])]
+    return df
+    
+
+
 DataBase = sqlite3.connect("Base_de_donnée_des_test.db")
 
 nom_colonne = ["unit number","time, in cycles"]
@@ -19,38 +36,15 @@ TableauTest = pd.DataFrame(dico)
 TableauTrain = pd.DataFrame(dico)
 
 
-TableauShape = TableauTest.shape
-TableauTrainShape = TableauTrain.shape
+listeTest = []
+listeTrain = []
 
 for i in range(1,5):
-    df = pd.read_table(f"CMAPSSData/test_FD00{i}.txt",sep=r'\s+',header=None,names=nom_colonne)
-    fileShape = df.shape
-    if (fileShape[1] > 26):
-        df = df.drop(df.columns[26:fileShape[1]],axis=1)
-        fileShape = df.shape
-    df["file origin"] = [f"FD00{i}" for j in range(fileShape[0])] 
+    listeTrain.append(chargerFichier('train',i,nom_colonne))
+    listeTest.append(chargerFichier('test',i,nom_colonne))
 
-    fileShape = df.shape
-    if(fileShape[1] != TableauShape[1]):
-        print(f"Le fichier test_FD00{i} fait {fileShape[1]} colonne alors que TableauTest fait {TableauShape[1]} colonnes")
-    else:
-        print(f"test_FD00{i} remplit et ses colonnes sont : {df.columns}")
-        TableauTest = pd.concat([TableauTest,df],ignore_index=True)
-
-for i in range(1,5):
-    df = pd.read_table(f"CMAPSSData/train_FD00{i}.txt",sep=r'\s+',header=None,names=nom_colonne)
-    fileShape = df.shape
-    if (fileShape[1] > 26):
-        df = df.drop(df.columns[26:fileShape[1]],axis=1)
-        fileShape = df.shape
-    df["file origin"] = [f"FD00{i}" for j in range(fileShape[0])]
-
-    fileShape = df.shape
-    if(fileShape[1] != TableauTrainShape[1]):
-        print(f"Le fichier train_FD00{i} fait {fileShape[1]} colonne alors que TableauTrain fait {TableauTrainShape[1]} colonnes")
-    else:
-        print(f"train_FD00{i} remplit et ses colonnes sont : {df.columns}")
-        TableauTrain = pd.concat([TableauTrain,df],ignore_index=True)
+TableauTest = pd.concat(listeTest,ignore_index=True)
+TableauTrain = pd.concat(listeTrain,ignore_index=True)
         
 
 TableauTest.to_sql(name="Test",con=DataBase,if_exists="replace",index=False)
