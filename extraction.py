@@ -23,16 +23,6 @@ for i in range(1,4):
     nom_colonne.append(f"operationnal setting {i}")
 for i in range(1,22):
     nom_colonne.append(f"sensor measurement {i}")
-dico = {}
-
-for key in nom_colonne:
-    dico[key] = []
-
-dico["file origin"] = []
-
-TableauTest = pd.DataFrame(dico)
-TableauTrain = pd.DataFrame(dico)
-
 
 listeTest = []
 listeTrain = []
