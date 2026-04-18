@@ -1,14 +1,12 @@
 import pandas as pd
 import sqlite3
 
-def chargerFichier(type,numero,nom_colonne):
-    if type not in ('train','test'):
-        print("Problème avec le type du fichier dans la fonction chargerFichier")
-        exit()
+def chargerFichier(fichier,numero,nom_colonne):
+    if fichier not in ('train','test'):
+        raise ValueError("Le type du fichier dans la fonction chargerFichier n'est pas correct")
     elif numero not in (1,2,3,4):
-        print("probleme avec le numero dans la focntion chargerFichier")
-        exit()
-    df = pd.read_table(f"CMAPSSData/{type}_FD00{numero}.txt",sep=r'\s+',header=None,names=nom_colonne)
+        raise ValueError("Le numero du fichier dans la fonction chargerFichier n'est pas correct")
+    df = pd.read_table(f"CMAPSSData/{fichier}_FD00{numero}.txt",sep=r'\s+',header=None,names=nom_colonne)
     fileShape = df.shape
     if (fileShape[1] > 26):
         df = df.drop(df.columns[26:fileShape[1]],axis=1)
