@@ -27,6 +27,8 @@ df_fd001 = df[df["file origin"] == "FD001"].copy()
 df_fd001 = df_fd001.drop(columns=liste_capteur_mort) #on garde que les capteurs du fichier FD001 et on retire les capteurs morts
 print(df_fd001)
 df_fd001.to_sql(name="Train_clean_FD001",con=DataBase,if_exists="replace",index=False)
-DataBase.close()
 
 #Faudra faire ça avec les autres fichiers train et peut etre avec les Test aussi
+
+
+DataBase.close()
