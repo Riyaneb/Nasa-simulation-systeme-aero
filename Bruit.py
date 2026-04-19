@@ -1,6 +1,8 @@
 import pandas as pd
 import sqlite3
 from sklearn.preprocessing import StandardScaler
+import joblib
+import os
 
 DataBase = sqlite3.connect("Base_de_donnée_des_test.db")
 
@@ -49,6 +51,8 @@ for element in colonne_base:
 
 df2[colonne_normaliser] = scale.fit_transform(df2[colonne_normaliser])
 print(df2)
+os.makedirs("artifacts", exist_ok=True)
+joblib.dump(scale, "artifacts/scaler_FD001.joblib")
 
 df2.to_sql(name="Train_Normalisé_FD001",con=DataBase,if_exists="replace",index=False)
 
